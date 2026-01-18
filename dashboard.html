@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>EraConnect • Discovery Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: rgba(30, 41, 59, 0.7);
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.1);
+            --text: #f8f9fc;
+            --text-dim: #94a3b8;
+            --sidebar-w: 260px;
+            --success: #22c55e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; }
+
+        /* --- BACKGROUND --- */
+        .stars-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at bottom right, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* --- LAYOUT STRUCTURE --- */
+        .app-container {
+            display: grid;
+            grid-template-columns: var(--sidebar-w) 1fr 320px;
+            height: 100vh;
+        }
+
+        /* --- LEFT SIDEBAR --- */
+        .sidebar {
+            background: rgba(15, 23, 42, 0.5);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 3rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-list { list-style: none; flex-grow: 1; }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            color: var(--text-dim);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        .nav-link.active { background: var(--accent-soft); color: var(--accent); }
+        .nav-link:hover:not(.active) { background: rgba(255,255,255,0.05); color: #fff; }
+
+        /* --- MAIN CONTENT --- */
+        .main-view {
+            padding: 2.5rem;
+            overflow-y: auto;
+        }
+
+        .header { margin-bottom: 2.5rem; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 8px; }
+        .header p { color: var(--text-dim); }
+
+        /* --- HUB GRID --- */
+        .section-title { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 1.5rem; font-weight: 600;
+        }
+
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .hub-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        .hub-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+        .member-count { 
+            position: absolute; top: 15px; right: 15px; 
+            font-size: 0.7rem; color: var(--success); font-weight: 700;
+        }
+
+        .hub-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+        .hub-card h3 { margin-bottom: 8px; font-size: 1.1rem; }
+        .hub-card p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.5rem; }
+        
+        .btn-action {
+            background: var(--accent); color: #000; border: none; padding: 10px 20px;
+            border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; transition: 0.3s;
+        }
+        .btn-action.joined { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+
+        /* --- RADAR --- */
+        .radar-box {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(129, 140, 248, 0.05) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 24px;
+            padding: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .radar-content { max-width: 50%; }
+        .radar-visual {
+            width: 180px; height: 180px; position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .circle {
+            position: absolute; border: 2px solid var(--accent); border-radius: 50%;
+            animation: pulse 2.5s infinite; opacity: 0;
+        }
+
+        @keyframes pulse {
+            0% { width: 40px; height: 40px; opacity: 0.8; }
+            100% { width: 180px; height: 180px; opacity: 0; }
+        }
+
+        /* --- CHAT PANEL --- */
+        .chat-panel {
+            background: rgba(15, 23, 42, 0.3);
+            border-left: 1px solid rgba(255,255,255,0.05);
+            padding: 2.5rem 1.5rem;
+        }
+
+        .chat-user {
+            display: flex; align-items: center; gap: 12px; padding: 12px;
+            border-radius: 15px; cursor: pointer; transition: 0.2s;
+            text-decoration: none; color: inherit;
+        }
+        .chat-user:hover { background: rgba(255,255,255,0.05); }
+        .avatar { width: 44px; height: 44px; border-radius: 50%; background: #334155; position: relative; }
+        .status-dot { 
+            position: absolute; bottom: 2px; right: 2px; width: 10px; height: 10px; 
+            background: #22c55e; border: 2px solid var(--bg); border-radius: 50%;
+        }
+
+        /* --- NOTIFICATION POPUP --- */
+        #notification {
+            position: fixed; bottom: 20px; right: 20px;
+            background: var(--accent); color: #000;
+            padding: 15px 25px; border-radius: 12px; font-weight: 700;
+            transform: translateY(100px); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 9999;
+        }
+        #notification.show { transform: translateY(0); }
+
+    </style>
+</head>
+<body>
+
+<div class="stars-bg"></div>
+<div id="notification">Joined Room! ✨</div>
+
+<div class="app-container">
+    <aside class="sidebar">
+        <a href="#" class="brand">E<span>C</span></a>
+        <nav class="nav-list">
+            <a href="dashboard.html" class="nav-link active"><span>🏠</span> <span>Explore Hubs</span></a>
+            <a href="a1.html" class="nav-link"><span>🔮</span> <span>Deep Match</span></a>
+            <a href="chat.html" class="nav-link"><span>💬</span> <span>Messages</span></a>
+            <a href="profile.html" class="nav-link"><span>👤</span> <span>Profile</span></a>
+        </nav>
+        <a href="index.html" class="nav-link" style="margin-top: auto; color: #f87171;"><span>🚪</span> <span>Logout</span></a>
+    </aside>
+
+    <main class="main-view">
+        <header class="header">
+            <h1 id="greeting">Hi, Student!</h1>
+            <p>10,240 students are currently in orbit. Find your crowd.</p>
+        </header>
+
+        <div class="section-title">
+            <h3>Active Discovery Hubs</h3>
+            <span style="color: var(--accent); font-size: 0.8rem; cursor: pointer;">View all rooms →</span>
+        </div>
+
+        <div class="hub-grid">
+            <div class="hub-card">
+                <span class="member-count">● 428 active</span>
+                <span class="hub-icon">☕</span>
+                <h3>Library & Coffee</h3>
+                <p>For those who love deep focus and caffeine sessions.</p>
+                <button class="btn-action" onclick="joinRoom(this, 'Library & Coffee')">Enter Room</button>
+            </div>
+            <div class="hub-card">
+                <span class="member-count">● 1.2k active</span>
+                <span class="hub-icon">🎮</span>
+                <h3>Gamers Circle</h3>
+                <p>Casual and competitive play. Connect for the next raid.</p>
+                <button class="btn-action" onclick="joinRoom(this, 'Gamers Circle')">Enter Room</button>
+            </div>
+            <div class="hub-card">
+                <span class="member-count">● 89 active</span>
+                <span class="hub-icon">🌱</span>
+                <h3>Wellness & Yoga</h3>
+                <p>Finding peace between exams and busy schedules.</p>
+                <button class="btn-action" onclick="joinRoom(this, 'Wellness & Yoga')">Enter Room</button>
+            </div>
+        </div>
+
+        <div class="radar-box">
+            <div class="radar-content">
+                <h2 style="font-family: 'Playfair Display'; margin-bottom: 10px;">The Match Radar</h2>
+                <p style="color: var(--text-dim); margin-bottom: 20px;">
+                    Our AI has detected high compatibility for you in the <b>Department of Arts</b> and <b>Innovation Labs</b>. 
+                </p>
+                <button class="btn-action" onclick="window.location.href='a1.html'" style="width: auto; padding: 12px 30px;">Start Deep Analysis</button>
+            </div>
+            <div class="radar-visual">
+                <div class="circle" style="animation-delay: 0s"></div>
+                <div class="circle" style="animation-delay: 0.8s"></div>
+                <div class="circle" style="animation-delay: 1.6s"></div>
+                <span style="font-size: 2rem;">📡</span>
+            </div>
+        </div>
+    </main>
+
+    <aside class="chat-panel">
+        <h3 style="font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem;">Recent Connections</h3>
+        <div class="chat-list">
+            <a href="chat.html" class="chat-user">
+                <div class="avatar"><div class="status-dot"></div></div>
+                <div class="chat-info">
+                    <h4>Alex Rivera</h4>
+                    <p>Are you going to the hackathon?</p>
+                </div>
+            </a>
+            <a href="chat.html" class="chat-user">
+                <div class="avatar" style="background: #a855f7;"></div>
+                <div class="chat-info">
+                    <h4>Priya Sharma</h4>
+                    <p>The notes from yesterday were helpful.</p>
+                </div>
+            </a>
+            <a href="chat.html" class="chat-user">
+                <div class="avatar" style="background: #10b981;"></div>
+                <div class="chat-info">
+                    <h4>Liam Wright</h4>
+                    <p>Let's grab coffee at 4!</p>
+                </div>
+            </a>
+        </div>
+    </aside>
+</div>
+
+<script>
+    window.onload = function() {
+        const savedData = localStorage.getItem('currentUser');
+        if (savedData) {
+            const user = JSON.parse(savedData);
+            const firstName = user.name.split(' ')[0];
+            document.getElementById('greeting').innerText = `Hi, ${firstName}! 👋`;
+        }
+    };
+
+    function joinRoom(btn, roomName) {
+        // Change button state
+        btn.innerText = "Inside Room";
+        btn.classList.add('joined');
+        
+        // Show Notification
+        const note = document.getElementById('notification');
+        note.innerText = `Joined ${roomName} Hub! ✨`;
+        note.classList.add('show');
+        
+        setTimeout(() => {
+            note.classList.remove('show');
+        }, 3000);
+
+        // Optional: Redirect to chat room after 1 second
+        // setTimeout(() => { window.location.href = 'chat.html'; }, 1000);
+    }
+</script>
+
+</body>
+</html>

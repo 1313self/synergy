@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>EraConnect • Your Academic Pulse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #050811;
+            --card: rgba(15, 23, 42, 0.9);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --text: #ffffff;
+            --text-dim: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; }
+
+        /* --- VIBRANT BACKGROUND --- */
+        .ambient-bg {
+            position: fixed; inset: 0; z-index: -2;
+            background: radial-gradient(circle at 20% 30%, #1e293b 0%, #050811 100%);
+        }
+        .floating-emoji {
+            position: absolute; font-size: 1.5rem; opacity: 0.2; pointer-events: none;
+            animation: floatUp 10s linear infinite;
+        }
+        @keyframes floatUp {
+            from { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.3; }
+            to { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: fixed; top: 0; width: 100%; z-index: 100;
+        }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--accent); text-decoration: none; }
+
+        /* --- CARD & ANIMATIONS --- */
+        .container { 
+            display: flex; align-items: center; justify-content: center; 
+            padding-top: 100px; min-height: 100vh; 
+        }
+        .onboarding-card {
+            background: var(--card); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 35px; padding: 3rem; width: 100%; max-width: 520px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5); position: relative;
+            transform-style: preserve-3d; transition: 0.5s;
+        }
+
+        .step { display: none; animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        .step.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- PROGRESS BAR --- */
+        .progress-container { height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-bottom: 2.5rem; }
+        .progress-bar { height: 100%; width: 20%; background: var(--accent); border-radius: 10px; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 15px var(--accent); }
+
+        /* --- INPUTS & BUBBLES --- */
+        h1 { font-family: 'Playfair Display'; font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-dim); margin-bottom: 2rem; font-size: 0.9rem; }
+
+        input, select, textarea {
+            width: 100%; padding: 16px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: white;
+            font-size: 1rem; margin-bottom: 1.5rem; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--accent); background: rgba(56, 189, 248, 0.05); }
+
+        .bubble-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px; margin-bottom: 2rem;
+        }
+        .bubble {
+            padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50px; text-align: center; cursor: pointer; transition: 0.3s; font-size: 0.85rem;
+        }
+        .bubble:hover { transform: scale(1.05); background: rgba(255,255,255,0.1); }
+        .bubble.selected { 
+            background: var(--accent); color: #000; font-weight: 700; 
+            border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* --- STUDY HABITS UI --- */
+        .habit-selector { 
+            display: flex; justify-content: space-between; gap: 10px; margin-bottom: 1.5rem;
+        }
+        .habit-btn {
+            flex: 1; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 15px;
+            text-align: center; cursor: pointer; border: 1px solid transparent; transition: 0.3s;
+        }
+        .habit-btn.selected { background: rgba(56, 189, 248, 0.15); border-color: var(--accent); }
+        .habit-btn span { display: block; font-size: 1.5rem; margin-bottom: 5px; }
+
+        .btn-main {
+            width: 100%; padding: 18px; background: var(--accent); color: #000;
+            border: none; border-radius: 15px; font-weight: 700; cursor: pointer;
+            font-size: 1rem; transition: 0.3s; margin-top: 1rem;
+        }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 25px var(--accent-glow); }
+        
+        .back-btn { text-align: center; color: var(--text-dim); cursor: pointer; margin-top: 1.5rem; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="ambient-bg" id="emojiBg"></div>
+<nav><a href="#" class="logo">EraConnect</a></nav>
+
+<div class="container">
+    <div class="onboarding-card">
+        <div class="progress-container"><div class="progress-bar" id="pBar"></div></div>
+
+        <div class="step active" id="loginStep">
+            <h1>Welcome Back 🚀</h1>
+            <p class="subtitle">Sync your profile with the campus network.</p>
+            <input type="email" id="lEmail" placeholder="University Email">
+            <input type="password" id="lPass" placeholder="Password">
+            <button class="btn-main" onclick="handleLogin()">Sign In</button>
+            <p class="back-btn" onclick="showSignup()">New here? Create Account ✨</p>
+        </div>
+
+        <div class="step" id="step1">
+            <h1>Identity 👤</h1>
+            <p class="subtitle">Let's start with the basics.</p>
+            <input type="text" id="fName" placeholder="Full Name">
+            <input type="email" id="sEmail" placeholder="University Email">
+            <input type="password" id="sPass" placeholder="Create Secure Password">
+            <select id="sYear">
+                <option value="1">Freshman (1st Year)</option>
+                <option value="2">Sophomore (2nd Year)</option>
+                <option value="3">Junior (3rd Year)</option>
+                <option value="4">Senior (4th Year)</option>
+            </select>
+            <button class="btn-main" onclick="next(2)">Next: Interests</button>
+        </div>
+
+        <div class="step" id="step2">
+            <h1>The Vibe 🎨</h1>
+            <p class="subtitle">Pick at least 3 topics you love.</p>
+            <div class="bubble-grid" id="hobbiesGrid"></div>
+            <button class="btn-main" onclick="next(3)">Next: Study Habits</button>
+            <p class="back-btn" onclick="next(1)">Go Back</p>
+        </div>
+
+        <div class="step" id="step3">
+            <h1>Study Pulse ⚡</h1>
+            <p class="subtitle">How and when do you grind?</p>
+            
+            <label style="font-size: 0.8rem; color: var(--accent); font-weight: 700; margin-bottom: 10px; display: block;">ACTIVE HOURS</label>
+            <div class="habit-selector" id="rhythmGrid">
+                <div class="habit-btn" onclick="pickRhythm(this, 'Morning Bird')"><span>🌅</span>Morning</div>
+                <div class="habit-btn" onclick="pickRhythm(this, 'Mid-Day')"><span>☀️</span>Mid-Day</div>
+                <div class="habit-btn" onclick="pickRhythm(this, 'Night Owl')"><span>🌙</span>Night</div>
+            </div>
+
+            <label style="font-size: 0.8rem; color: var(--accent); font-weight: 700; margin-bottom: 10px; display: block;">DAILY STUDY GOAL</label>
+            <div class="habit-selector" id="hoursGrid">
+                <div class="habit-btn" onclick="pickHours(this, '1-3h')">1-3h</div>
+                <div class="habit-btn" onclick="pickHours(this, '4-6h')">4-6h</div>
+                <div class="habit-btn" onclick="pickHours(this, '7h+')">7h+</div>
+            </div>
+
+            <button class="btn-main" onclick="next(4)">Almost Done</button>
+            <p class="back-btn" onclick="next(2)">Go Back</p>
+        </div>
+
+        <div class="step" id="step4">
+            <h1>The Story 📖</h1>
+            <p class="subtitle">Finish your profile with a quick intro.</p>
+            <textarea id="sBio" rows="4" placeholder="Tell us something interesting about yourself..."></textarea>
+            <button class="btn-main" onclick="handleSignup()">Join EraConnect</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = "https://eraconnect.onrender.com";
+    let selectedHobbies = new Set();
+    let userRhythm = "";
+    let userHours = "";
+
+    const hobbies = ["💻 Coding", "📸 Photo", "🎸 Music", "🏋️ Fitness", "🎨 Art", "🍿 Movies", "🧪 Science", "📚 Reading", "🎮 Gaming", "🍵 Tea", "💃 Dance", "♟️ Chess"];
+
+    window.onload = () => {
+        createEmojis();
+        const grid = document.getElementById('hobbiesGrid');
+        hobbies.forEach(h => {
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            b.innerText = h;
+            b.onclick = () => {
+                b.classList.toggle('selected');
+                selectedHobbies.has(h) ? selectedHobbies.delete(h) : selectedHobbies.add(h);
+            };
+            grid.appendChild(b);
+        });
+    };
+
+    function createEmojis() {
+        const emojis = ['📚', '☕', '💻', '🎓', '✨', '⚡'];
+        const bg = document.getElementById('emojiBg');
+        for(let i=0; i<15; i++) {
+            const span = document.createElement('span');
+            span.className = 'floating-emoji';
+            span.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+            span.style.left = Math.random()*100 + 'vw';
+            span.style.animationDelay = Math.random()*5 + 's';
+            bg.appendChild(span);
+        }
+    }
+
+    function next(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        const target = (n === 1) ? 'step1' : (n === 2) ? 'step2' : (n === 3) ? 'step3' : 'step4';
+        document.getElementById(target).classList.add('active');
+        document.getElementById('pBar').style.width = (n * 25) + "%";
+    }
+
+    function showSignup() {
+        document.getElementById('loginStep').classList.remove('active');
+        next(1);
+    }
+
+    function pickRhythm(el, val) {
+        document.querySelectorAll('#rhythmGrid .habit-btn').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+        userRhythm = val;
+    }
+
+    function pickHours(el, val) {
+        document.querySelectorAll('#hoursGrid .habit-btn').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+        userHours = val;
+    }
+
+    async function handleLogin() {
+        const email = document.getElementById('lEmail').value;
+        const password = document.getElementById('lPass').value;
+        try {
+            const res = await fetch(`${API}/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if(data.status === "success") {
+                localStorage.setItem('user_email', data.user_email);
+                localStorage.setItem('user_name', data.user_name);
+                window.location.href = "dashboard.html";
+            } else { alert(data.message); }
+        } catch(e) { alert("Backend Offline!"); }
+    }
+
+    async function handleSignup() {
+        const signupData = {
+            name: document.getElementById('fName').value,
+            email: document.getElementById('sEmail').value,
+            password: document.getElementById('sPass').value,
+            year: document.getElementById('sYear').value,
+            interests: Array.from(selectedHobbies),
+            bio: `${document.getElementById('sBio').value} | Cycle: ${userRhythm} | Study: ${userHours}`
+        };
+
+        try {
+            const res = await fetch(`${API}/signup`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(signupData)
+            });
+            const data = await res.json();
+            if(data.status === "success") {
+                localStorage.setItem('user_email', signupData.email);
+                localStorage.setItem('user_name', signupData.name);
+                window.location.href = "profile.html";
+            } else { alert(data.message); }
+        } catch(e) { alert("Server Error."); }
+    }
+</script>
+
+</body>
+</html>

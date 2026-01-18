@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Synergy • Compatibility Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: rgba(30, 41, 59, 0.7);
+      --accent: #38bdf8;
+      --accent-secondary: #818cf8;
+      --text: #f8f9fc;
+      --text-soft: #94a3b8;
+      --highlight: #fde047;
+      --glow: 0 0 40px rgba(56, 189, 248, 0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* --- BACKGROUND STARS --- */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: twinkle var(--duration) infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* --- FLOATING SECTION EMOJIS --- */
+    .emoji-decor {
+      position: absolute;
+      pointer-events: none;
+      font-size: 1.8rem;
+      z-index: 10;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+      animation: floatEmoji 4s ease-in-out infinite;
+    }
+
+    @keyframes floatEmoji {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+      50% { transform: translateY(-15px) rotate(15deg); opacity: 1; }
+    }
+
+    .pos-top-right { top: -20px; right: -10px; animation-delay: 0.5s; }
+    .pos-bottom-left { bottom: -15px; left: -20px; animation-delay: 1.2s; }
+
+    /* --- HEART PARTICLE ANIMATION --- */
+    .heart-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      font-size: 24px;
+      user-select: none;
+      animation: floatUp 1.5s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+    }
+
+    /* --- LAYOUT & CARDS --- */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-soft);
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+
+    .card {
+      position: relative;
+      background: var(--card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .section-title {
+      color: var(--accent);
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 1.2rem 0 0.5rem;
+      color: var(--text-soft);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 1.2rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      color: white;
+      border: none;
+      margin-top: 2rem;
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+    }
+
+    #loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--accent);
+      font-style: italic;
+      display: none;
+    }
+
+    .score-badge {
+      float: right;
+      background: var(--accent);
+      color: var(--bg);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .result-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 4px solid var(--accent);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 0 12px 12px 0;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .final-verdict {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(129, 140, 248, 0.1));
+      border: 1px solid var(--accent);
+      padding: 2.5rem;
+      border-radius: 16px;
+      text-align: center;
+      margin-top: 3rem;
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars-container" id="starField"></div>
+
+<div class="container">
+  <header>
+    <h1>Synergy</h1>
+    <div class="subtitle">Finding your soul connection from 8,000 students</div>
+    <div id="userBadge" style="margin-top: 10px; font-size: 0.8rem; color: #38bdf8;"></div>
+  </header>
+
+  <div class="card">
+    <span class="emoji-decor pos-top-right">✨</span>
+    <span class="emoji-decor pos-bottom-left">💖</span>
+
+    <div class="section-title">Your Profile Analysis</div>
+    <p style="font-size: 0.9rem; color: var(--text-soft); margin-bottom: 1rem;">
+      Describe your vibe, current mood, or what you're looking for. Gemini will find your best matches.
+    </p>
+
+    <label>Your Name</label>
+    <input type="text" id="sName" placeholder="Enter your name" autocomplete="off"/>
+
+    <label>Your Essence (Interests, Mood, Goals)</label>
+    <textarea id="sDesc" rows="5" placeholder="Example: I'm a tech geek who loves building things, late-night lofi music, and exploring hidden cafes..."></textarea>
+    
+    <button class="btn-primary" id="analyzeBtn" onclick="handleAnalyze(event)">Find My Matches</button>
+  </div>
+
+  <div id="loading">Scanning the stars for your matches...</div>
+  <div id="results"></div>
+</div>
+
+<script>
+// --- AUTH PROTECTION ---
+const userEmail = localStorage.getItem("userEmail");
+const userName = localStorage.getItem("userName");
+
+if (!userEmail) {
+    alert("Please log in to use Synergy!");
+    window.location.href = "login.html"; 
+} else {
+    document.getElementById('userBadge').innerText = `Logged in as: ${userEmail}`;
+    if (userName) document.getElementById('sName').value = userName;
+}
+
+// --- INITIALIZE STAR FIELD ---
+function createStars() {
+  const container = document.getElementById('starField');
+  const starCount = 150;
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 2 + 1;
+    star.style.width = `${size}px`;
+    star.style.height = `${size}px`;
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+    star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+    star.style.animationDelay = `${Math.random() * 5}s`;
+    container.appendChild(star);
+  }
+}
+createStars();
+
+// --- HEART BURST ANIMATION ---
+function createHearts(x, y) {
+  const heartCount = 15;
+  const colors = ['#38bdf8', '#818cf8', '#fde047', '#fb7185'];
+  
+  for (let i = 0; i < heartCount; i++) {
+    const heart = document.createElement('div');
+    heart.className = 'heart-particle';
+    heart.innerHTML = '❤️';
+    heart.style.left = `${x}px`;
+    heart.style.top = `${y}px`;
+    heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+    const destX = (Math.random() - 0.5) * 400;
+    const destY = (Math.random() - 0.5) * 400;
+    heart.style.setProperty('--x', `${destX}px`);
+    heart.style.setProperty('--y', `${destY}px`);
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1500);
+  }
+}
+
+async function handleAnalyze(e) {
+  const name = document.getElementById('sName').value.trim();
+  const desc = document.getElementById('sDesc').value.trim();
+  const loading = document.getElementById('loading');
+  const results = document.getElementById('results');
+  const btn = document.getElementById('analyzeBtn');
+
+  if (!name || !desc) {
+    alert("Please fill in both your name and essence description.");
+    return;
+  }
+
+  createHearts(e.clientX, e.clientY);
+  loading.style.display = 'block';
+  btn.disabled = true;
+  btn.innerText = "Analyzing...";
+  results.innerHTML = '';
+
+  try {
+    const res = await fetch('https://eraconnect.onrender.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+          seekerName: name, 
+          seekerDesc: desc,
+          email: userEmail  // Sending the real email from localStorage
+      })
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.detail || 'The cosmic server is busy.');
+    }
+
+    const data = await res.json();
+    showResults(data.text);
+
+  } catch (err) {
+    results.innerHTML = `<div class="card" style="color:#fb7185; text-align:center;">Error: ${err.message}</div>`;
+  } finally {
+    loading.style.display = 'none';
+    btn.disabled = false;
+    btn.innerText = "Find My Matches";
+  }
+}
+
+function showResults(text) {
+  const resultsArea = document.getElementById('results');
+  
+  // Split the response into Candidates and Winner
+  const parts = text.split('WINNER:');
+  const candidatesPart = parts[0];
+  const winnerPart = parts[1] || "";
+  
+  let html = '<div class="section-title">Analysis Results</div>';
+
+  // Parse Candidates
+  const blocks = candidatesPart.split('---');
+  blocks.forEach(block => {
+    if (!block.includes('Name:')) return;
+    
+    const lines = block.trim().split('\n');
+    let item = {};
+    lines.forEach(line => {
+      if (line.startsWith('Name:')) item.name = line.replace('Name:', '').trim();
+      if (line.startsWith('Score:')) item.score = line.replace('Score:', '').trim();
+      if (line.startsWith('The Good:')) item.good = line.replace('The Good:', '').trim();
+      if (line.startsWith('The Bad:')) item.bad = line.replace('The Bad:', '').trim();
+      if (line.startsWith('Why it works:')) item.why = line.replace('Why it works:', '').trim();
+    });
+
+    html += `
+      <div class="result-card">
+        <div class="score-badge">${item.score || 'Match'}</div>
+        <h3 style="color:var(--accent); margin-bottom:0.8rem;">${item.name || 'Candidate'}</h3>
+        <p style="margin-bottom:0.4rem; font-size:0.95rem;"><strong>The Good:</strong> ${item.good || 'N/A'}</p>
+        <p style="margin-bottom:0.4rem; font-size:0.95rem;"><strong>The Bad:</strong> ${item.bad || 'N/A'}</p>
+        <p style="font-style:italic; color:var(--text-soft); margin-top:0.8rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top:0.5rem;">
+          "${item.why || 'Deep link found.'}"
+        </p>
+      </div>
+    `;
+  });
+
+  // Parse Winner
+  if (winnerPart) {
+    const lines = winnerPart.trim().split('\n');
+    const winnerName = lines[0].trim();
+    const reason = lines.slice(1).join(' ').replace('REASON:', '').trim();
+    
+    html += `
+      <div class="final-verdict">
+        <h2 style="font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--highlight); margin-bottom:1rem;">
+          🏆 Best Match: ${winnerName}
+        </h2>
+        <p style="color:var(--text); line-height:1.6; font-size:1.1rem;">${reason}</p>
+      </div>
+    `;
+  }
+
+  resultsArea.innerHTML = html;
+  resultsArea.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
