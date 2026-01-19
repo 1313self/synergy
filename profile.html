@@ -18,56 +18,53 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; }
-        
-        /* Background stars */
-        .stars-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        
-        @keyframes float {
-            0%   { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
-            40%  { opacity: 0.9; }
-            100% { transform: translateY(-110vh) scale(1.4) rotate(360deg); opacity: 0; }
-        }
-        .floating-star {
-            position: absolute; color: var(--star); font-size: 1.6rem;
-            pointer-events: none; animation: float 5s linear infinite;
-            text-shadow: 0 0 8px rgba(253, 224, 71, 0.7);
+
+        /* Optimized Background */
+        .stars-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
         }
 
         /* NAVIGATION */
         nav {
-            padding: 1.5rem 5%;
+            padding: 1rem 5%;
             display: flex; justify-content: space-between; align-items: center;
             backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky; top: 0; z-index: 100;
         }
         .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--accent); text-decoration: none; }
 
         /* LAYOUT */
-        .container { max-width: 1000px; margin: 3rem auto; padding: 0 20px; display: grid; grid-template-columns: 350px 1fr; gap: 2rem; }
+        .container {
+            max-width: 1200px; margin: 2rem auto; padding: 0 20px;
+            display: grid; grid-template-columns: 350px 1fr; gap: 2.5rem;
+        }
 
         /* LEFT - ID CARD */
         .id-card {
             background: var(--card); border: 1px solid rgba(255,255,255,0.1);
             padding: 2.5rem; border-radius: 30px; text-align: center;
-            backdrop-filter: blur(20px); position: sticky; top: 20px;
+            backdrop-filter: blur(20px); height: fit-content;
+            position: sticky; top: 100px;
         }
         .profile-pic-container {
-            width: 150px; height: 150px; margin: 0 auto 1.5rem;
-            border-radius: 50%; border: 4px solid var(--accent);
-            padding: 5px; position: relative;
+            width: 120px; height: 120px; margin: 0 auto 1.5rem;
+            border-radius: 50%; border: 3px solid var(--accent);
+            padding: 5px;
         }
         .profile-pic {
             width: 100%; height: 100%; border-radius: 50%;
-            background: linear-gradient(45deg, var(--bg), var(--secondary));
-            display: flex; align-items: center; justify-content: center; font-size: 3rem;
+            background: linear-gradient(45deg, #1e293b, #334155);
+            display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
         }
         .user-id-badge {
-            display: inline-block; background: var(--accent); color: #000;
-            padding: 4px 12px; border-radius: 50px; font-size: 0.7rem;
-            font-weight: 800; margin-bottom: 1rem;
+            display: inline-block; background: var(--accent-soft); color: var(--accent);
+            border: 1px solid var(--accent); padding: 4px 12px; border-radius: 50px;
+            font-size: 0.75rem; font-weight: 700; margin-bottom: 1rem;
         }
-        .stat-row { display: flex; justify-content: space-around; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); }
-        .stat-item b { display: block; font-size: 1.2rem; color: var(--accent); }
-        .stat-item span { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
+        .stat-row { display: flex; justify-content: space-around; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        .stat-item b { display: block; font-size: 1.1rem; color: var(--accent); }
+        .stat-item span { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
         /* RIGHT - DETAILS */
         .details-panel { display: flex; flex-direction: column; gap: 2rem; }
@@ -75,235 +72,211 @@
             background: var(--card); padding: 2.5rem; border-radius: 30px;
             border: 1px solid rgba(255,255,255,0.05);
         }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
-        .data-point label { display: block; font-size: 0.75rem; color: var(--accent); font-weight: 700; margin-bottom: 5px; }
-        .data-point p { font-size: 1rem; color: var(--text); }
-        .bio-para { line-height: 1.8; color: var(--text-dim); margin-top: 1rem; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem; }
+        .data-point label { display: block; font-size: 0.75rem; color: var(--accent); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
+        .data-point p { font-size: 1rem; color: var(--text); font-weight: 500; }
+        .bio-para { line-height: 1.8; color: var(--text-dim); margin-top: 1rem; font-style: italic; }
+
         .tag-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.5rem; }
         .tag {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px 16px; border-radius: 50px; font-size: 0.85rem;
+            background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; color: var(--accent);
         }
-        h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 0.5rem; }
-        
+        h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; }
+
         .edit-btn {
             background: var(--accent); border: none; padding: 12px 30px;
-            border-radius: 15px; font-weight: 700; cursor: pointer; margin-top: 1rem;
-            transition: 0.3s;
+            border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 1.5rem;
+            width: 100%; transition: 0.3s; color: #0f172a;
         }
-        .edit-btn:hover { transform: scale(1.05); background: #7dd3fc; }
+        .edit-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
 
-        /* --- EDIT MODAL STYLES --- */
+        /* --- MODAL STYLES --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
             display: none; justify-content: center; align-items: center; z-index: 1000;
         }
         .modal-card {
-            background: #1e293b; padding: 2.5rem; border-radius: 30px;
-            width: 90%; max-width: 500px; border: 1px solid var(--accent);
+            background: #1e293b; padding: 2.5rem; border-radius: 25px;
+            width: 90%; max-width: 500px; border: 1px solid rgba(255,255,255,0.1);
         }
-        .modal-card h3 { margin-bottom: 1.5rem; color: var(--accent); }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: var(--text-dim); }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--accent); font-weight: 600; }
         .form-group input, .form-group textarea {
-            width: 100%; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.2); color: white; outline: none;
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.3); color: white; outline: none; font-size: 0.9rem;
         }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 1.5rem; }
-        .save-btn { background: var(--accent); color: black; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; flex: 1; }
-        .cancel-btn { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 10px; cursor: pointer; flex: 1; }
+        .modal-buttons { display: flex; gap: 12px; margin-top: 1.5rem; }
+        .save-btn { background: var(--accent); color: #000; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; flex: 2; }
+        .cancel-btn { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; cursor: pointer; flex: 1; }
 
         @media (max-width: 850px) {
-            .container { grid-template-columns: 1fr; }
-            .id-card { position: relative; }
+            .container { grid-template-columns: 1fr; margin-top: 1rem; }
+            .id-card { position: relative; top: 0; }
+            .info-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-<div class="stars-bg" id="starsBg"></div>
+<div class="stars-bg"></div>
 
 <div class="modal-overlay" id="editModal">
     <div class="modal-card">
-        <h3>Edit Your Era Profile</h3>
+        <h2 style="margin-bottom: 1.5rem;">Update EraProfile</h2>
         <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="editName">
+            <label>Display Name</label>
+            <input type="text" id="editName" placeholder="Enter your name">
         </div>
         <div class="form-group">
             <label>Major Course</label>
-            <input type="text" id="editMajor">
+            <input type="text" id="editMajor" placeholder="e.g. Computer Science">
         </div>
         <div class="form-group">
-            <label>Personal Bio / Intro</label>
-            <textarea id="editBio" rows="4"></textarea>
+            <label>Short Bio</label>
+            <textarea id="editBio" rows="4" placeholder="Tell your story..."></textarea>
         </div>
         <div class="modal-buttons">
-            <button class="save-btn" onclick="saveProfile()">Update Profile</button>
+            <button class="save-btn" onclick="saveProfile()">Save Changes</button>
             <button class="cancel-btn" onclick="toggleModal()">Cancel</button>
         </div>
     </div>
 </div>
 
 <nav>
-    <a href="dashboard.html" class="logo">EraConnect</a>
-    <div style="display: flex; gap: 20px;">
-        <a href="dashboard.html" style="color: white; text-decoration: none; font-size: 0.9rem;">Dashboard</a>
-        <a href="#" style="color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 700;">My Profile</a>
+    <a href="dashboard.html" class="logo">Era<span>Connect</span></a>
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <a href="dashboard.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.85rem;">Dashboard</a>
+        <a href="#" style="color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 700;">My Profile</a>
     </div>
 </nav>
 
 <div class="container">
     <aside class="id-card">
-        <div class="user-id-badge" id="userId">ID: EC-2024-XXXXX</div>
+        <div class="user-id-badge" id="userId">ID: LOADING...</div>
         <div class="profile-pic-container">
-            <div class="profile-pic">✨</div>
+            <div class="profile-pic">👤</div>
         </div>
-        <h2 id="userName">Student Name</h2>
-        <p id="userYear" style="color: var(--accent); font-weight: 600;">3rd Year Undergraduate</p>
-        <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 5px;">📍 Main Campus, Library Wing</p>
-        
+        <h2 id="userName">New User</h2>
+        <p id="userMajorDisplay" style="color: var(--accent); font-weight: 600; margin-top: 5px;">Student</p>
+        <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 8px;">📍 Main Campus, Orbit</p>
+
         <div class="stat-row">
-            <div class="stat-item"><b id="matchCount">124</b><span>Connections</span></div>
-            <div class="stat-item"><b id="hubCount">8</b><span>Hubs</span></div>
-            <div class="stat-item"><b>98%</b><span>Activity</span></div>
+            <div class="stat-item"><b id="matchCount">0</b><span>Matches</span></div>
+            <div class="stat-item"><b id="hubCount">0</b><span>Hubs</span></div>
+            <div class="stat-item"><b>100%</b><span>Status</span></div>
         </div>
-        
+
         <button class="edit-btn" onclick="toggleModal()">Edit Profile</button>
     </aside>
 
     <main class="details-panel">
         <section class="info-section">
-            <h2>Academic Detail</h2>
+            <h2>Academic Profile</h2>
             <div class="info-grid">
                 <div class="data-point">
-                    <label>Major Course</label>
-                    <p id="pMajor">Course not set</p>
+                    <label>Course / Major</label>
+                    <p id="pMajor">Not set</p>
                 </div>
                 <div class="data-point">
-                    <label>University Email</label>
-                    <p id="pEmail">student.era@university.edu</p>
+                    <label>Registration Email</label>
+                    <p id="pEmail">Not available</p>
                 </div>
                 <div class="data-point">
-                    <label>Minor / Specialization</label>
-                    <p>Psychology of Social Networks</p>
+                    <label>Status</label>
+                    <p>Active Student</p>
                 </div>
                 <div class="data-point">
-                    <label>Expected Graduation</label>
-                    <p>May 2026</p>
+                    <label>Member Since</label>
+                    <p id="pJoinDate">January 2024</p>
                 </div>
             </div>
         </section>
 
         <section class="info-section">
-            <h2>Campus Moments & Interests</h2>
+            <h2>Campus Bio</h2>
             <p class="bio-para" id="pBioDisplay">
-                Your bio will appear here. Click edit to tell your story!
+                Your story hasn't been written yet. Use the edit button to update your campus bio!
             </p>
-            <div class="tag-group" id="pTags"></div>
+            <div class="tag-group" id="pTags">
+                <div class="tag">New Member</div>
+                <div class="tag">EraConnect Explorer</div>
+            </div>
         </section>
     </main>
 </div>
 
 <script>
-    // --- LOAD DATA ---
+    // --- CORE DATA LOGIC ---
     function loadProfile() {
+        // We look for 'currentUser' which should be set during login
         const savedData = localStorage.getItem('currentUser');
-        if (savedData) {
-            const user = JSON.parse(savedData);
-            
-            // Text Elements
-            document.getElementById('userName').innerText = user.name || "Set Name";
-            document.getElementById('pMajor').innerText = user.major || "Set Major";
-            document.getElementById('pBioDisplay').innerText = user.bio || "Most alive after midnight — usually spotted in the 'Late Night Coffee' hub with headphones on.";
-            
-            // Form Elements (for Modal)
-            document.getElementById('editName').value = user.name || "";
-            document.getElementById('editMajor').value = user.major || "";
-            document.getElementById('editBio').value = user.bio || "";
+        const user = savedData ? JSON.parse(savedData) : {};
 
-            // Tags
-            const tagContainer = document.getElementById('pTags');
-            tagContainer.innerHTML = ""; // Clear existing
-            if(user.interests && Array.isArray(user.interests)) {
-                user.interests.forEach(tag => {
-                    const t = document.createElement('div');
-                    t.className = 'tag';
-                    t.innerText = tag;
-                    tagContainer.appendChild(t);
-                });
-            }
+        const userEmail = localStorage.getItem('user_email') || "Not Signed In";
+
+        // Update UI Elements with LocalStorage data or Fallbacks
+        document.getElementById('userName').innerText = user.name || "Set Name";
+        document.getElementById('userMajorDisplay').innerText = user.major || "Member";
+        document.getElementById('pMajor').innerText = user.major || "Course Not Set";
+        document.getElementById('pEmail').innerText = userEmail;
+        document.getElementById('pBioDisplay').innerText = user.bio || "No bio added yet. Click 'Edit Profile' to introduce yourself to the community!";
+
+        // Populate Modal Inputs for editing
+        document.getElementById('editName').value = user.name || "";
+        document.getElementById('editMajor').value = user.major || "";
+        document.getElementById('editBio').value = user.bio || "";
+
+        // Handle unique Era ID
+        let ecID = localStorage.getItem('ec_id');
+        if(!ecID) {
+            ecID = "EC-" + new Date().getFullYear() + "-" + Math.random().toString(36).substr(2, 5).toUpperCase();
+            localStorage.setItem('ec_id', ecID);
         }
-        
-        // Persist the random ID so it doesn't change every refresh
-        if(!localStorage.getItem('ec_id')) {
-            const randomID = "EC-" + (new Date().getFullYear()) + "-" + Math.random().toString(36).substr(2, 5).toUpperCase();
-            localStorage.setItem('ec_id', randomID);
+        document.getElementById('userId').innerText = "ID: " + ecID;
+
+        // Realistic Stats (can be hardcoded or randomized once on first load)
+        if(!localStorage.getItem('user_stats')) {
+            const stats = {
+                matches: Math.floor(Math.random() * 50) + 10,
+                hubs: Math.floor(Math.random() * 5) + 2
+            };
+            localStorage.setItem('user_stats', JSON.stringify(stats));
         }
-        document.getElementById('userId').innerText = "ID: " + localStorage.getItem('ec_id');
-        document.getElementById('matchCount').innerText = Math.floor(Math.random() * 200) + 50;
+        const stats = JSON.parse(localStorage.getItem('user_stats'));
+        document.getElementById('matchCount').innerText = stats.matches;
+        document.getElementById('hubCount').innerText = stats.hubs;
     }
 
-    // --- MODAL LOGIC ---
+    // --- UI LOGIC ---
     function toggleModal() {
         const modal = document.getElementById('editModal');
         modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
     }
 
     function saveProfile() {
+        // Retrieve current object or create new
         const savedData = localStorage.getItem('currentUser');
         let user = savedData ? JSON.parse(savedData) : {};
 
-        // Update object
+        // Update with form values
         user.name = document.getElementById('editName').value;
         user.major = document.getElementById('editMajor').value;
         user.bio = document.getElementById('editBio').value;
 
-        // Save back to LocalStorage
+        // Global update for other pages (like dashboard greeting)
+        localStorage.setItem('user_name', user.name);
         localStorage.setItem('currentUser', JSON.stringify(user));
 
-        // Refresh UI
         loadProfile();
         toggleModal();
-        
-        // Nice visual feedback
-        alert("EraProfile Updated Successfully! ✨");
+
+        // Non-blocking feedback
+        console.log("Profile updated successfully.");
     }
 
-    // --- ANIMATIONS ---
-    function createBackgroundStars() {
-        const bg = document.getElementById('starsBg');
-        for (let i = 0; i < 120; i++) {
-            const star = document.createElement('div');
-            star.style.position = 'absolute';
-            star.style.width = Math.random() * 2.5 + 'px';
-            star.style.height = star.style.width;
-            star.style.background = 'white';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.opacity = Math.random() * 0.7 + 0.3;
-            star.style.borderRadius = '50%';
-            bg.appendChild(star);
-        }
-    }
-
-    function startStarAnimation() {
-        setInterval(() => {
-            const star = document.createElement('div');
-            star.className = 'floating-star';
-            star.innerHTML = '✨';
-            star.style.left = Math.random() * 100 + 'vw';
-            star.style.animationDuration = (Math.random() * 4 + 3.5) + 's';
-            document.body.appendChild(star);
-            setTimeout(() => star.remove(), 7000);
-        }, 900);
-    }
-
-    window.onload = function() {
-        loadProfile();
-        createBackgroundStars();
-        startStarAnimation();
-    };
+    // Initialize
+    window.onload = loadProfile;
 </script>
 </body>
 </html>
