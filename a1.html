@@ -324,7 +324,7 @@ function createHearts(x, y) {
 }
 
 async function handleAnalyze(e) {
-    e.preventDefault();  // ← THIS LINE FIXES THE PROBLEM (stops GET submit)
+    e.preventDefault();  // Stops any default GET submit
 
     const name = document.getElementById('sName').value.trim();
     const desc = document.getElementById('sDesc').value.trim();
@@ -337,6 +337,15 @@ async function handleAnalyze(e) {
         return;
     }
 
+    // Get token from localStorage (saved after login)
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+        alert("Session expired or not logged in. Please login again.");
+        window.location.href = "index.html";
+        return;
+    }
+
     createHearts(e.clientX, e.clientY);
     loading.style.display = 'block';
     btn.disabled = true;
@@ -344,23 +353,22 @@ async function handleAnalyze(e) {
     results.innerHTML = '';
 
     try {
-        const token = localStorage.getItem('access_token');
         const res = await fetch(`${API_BASE}/analyze`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`  // Add if using JWT
+                'Authorization': `Bearer ${token}`  // ← THIS LINE WAS MISSING OR EMPTY
             },
             body: JSON.stringify({
                 seekerName: name,
                 seekerDesc: desc,
-                email: localStorage.getItem('user_email')  // For quota tracking
+                email: localStorage.getItem('user_email')  // for quota
             })
         });
 
         if (!res.ok) {
             const errorData = await res.json();
-            throw new Error(errorData.detail || 'The cosmic server is busy.');
+            throw new Error(errorData.detail || 'Server error');
         }
 
         const data = await res.json();
@@ -433,6 +441,7 @@ function showResults(text) {
 </script>
 </body>
 </html>
+
 
 
 
