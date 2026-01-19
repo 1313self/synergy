@@ -322,51 +322,55 @@ function createHearts(x, y) {
 }
 
 async function handleAnalyze(e) {
-  const name = document.getElementById('sName').value.trim();
-  const desc = document.getElementById('sDesc').value.trim();
-  const loading = document.getElementById('loading');
-  const results = document.getElementById('results');
-  const btn = document.getElementById('analyzeBtn');
+    e.preventDefault();  // ← THIS LINE FIXES THE PROBLEM (stops GET submit)
 
-  if (!name || !desc) {
-    alert("Please fill in both your name and essence description.");
-    return;
-  }
+    const name = document.getElementById('sName').value.trim();
+    const desc = document.getElementById('sDesc').value.trim();
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+    const btn = document.getElementById('analyzeBtn');
 
-  createHearts(e.clientX, e.clientY);
-  loading.style.display = 'block';
-  btn.disabled = true;
-  btn.innerText = "Analyzing...";
-  results.innerHTML = '';
-
-  try {
-    const res = await fetch('https://eraconnect.onrender.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-          seekerName: name, 
-          seekerDesc: desc,
-          email: userEmail  // Sending the real email from localStorage
-      })
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.detail || 'The cosmic server is busy.');
+    if (!name || !desc) {
+        alert("Please fill in both your name and essence description.");
+        return;
     }
 
-    const data = await res.json();
-    showResults(data.text);
+    createHearts(e.clientX, e.clientY);
+    loading.style.display = 'block';
+    btn.disabled = true;
+    btn.innerText = "Analyzing...";
+    results.innerHTML = '';
 
-  } catch (err) {
-    results.innerHTML = `<div class="card" style="color:#fb7185; text-align:center;">Error: ${err.message}</div>`;
-  } finally {
-    loading.style.display = 'none';
-    btn.disabled = false;
-    btn.innerText = "Find My Matches";
-  }
+    try {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch(`${API_BASE}/analyze`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`  // Add if using JWT
+            },
+            body: JSON.stringify({
+                seekerName: name,
+                seekerDesc: desc,
+                email: localStorage.getItem('user_email')  // For quota tracking
+            })
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.detail || 'The cosmic server is busy.');
+        }
+
+        const data = await res.json();
+        showResults(data.text);
+    } catch (err) {
+        results.innerHTML = `<div class="card" style="color:#fb7185; text-align:center;">Error: ${err.message}</div>`;
+    } finally {
+        loading.style.display = 'none';
+        btn.disabled = false;
+        btn.innerText = "Find My Matches";
+    }
 }
-
 function showResults(text) {
   const resultsArea = document.getElementById('results');
   
@@ -427,4 +431,5 @@ function showResults(text) {
 </script>
 </body>
 </html>
+
 
