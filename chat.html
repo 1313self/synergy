@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EraConnect • Private Room</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --sidebar: rgba(15, 23, 42, 0.9);
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --text: #f8f9fc;
+            --text-dim: #94a3b8;
+            --sent: #0ea5e9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            height: 100vh; 
+            display: flex; 
+            overflow: hidden;
+        }
+
+        /* --- ICEBREAKER SIDEBAR --- */
+        .side-panel {
+            width: 320px;
+            background: var(--sidebar);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .back-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .icebreaker-card {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 1.2rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .icebreaker-card:hover { background: rgba(56, 189, 248, 0.1); transform: translateX(5px); }
+        .icebreaker-card b { display: block; color: var(--accent); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; }
+        .icebreaker-card p { font-size: 0.85rem; line-height: 1.4; color: var(--text-dim); }
+
+        /* --- CHAT MAIN AREA --- */
+        .chat-main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
+        }
+
+        .chat-header {
+            padding: 1.5rem 2.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(45deg, var(--accent), #818cf8); }
+        
+        /* --- MESSAGES --- */
+        .messages-viewport {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Custom Scrollbar */
+        .messages-viewport::-webkit-scrollbar { width: 6px; }
+        .messages-viewport::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .bubble {
+            max-width: 60%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bubble.received { 
+            background: var(--card); 
+            align-self: flex-start; 
+            border-bottom-left-radius: 4px;
+        }
+
+        .bubble.sent { 
+            background: var(--sent); 
+            color: white; 
+            align-self: flex-end; 
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .typing { font-size: 0.75rem; color: var(--text-dim); margin-left: 5px; display: none; }
+
+        /* --- INPUT BAR --- */
+        .input-container {
+            padding: 1.5rem 2.5rem;
+            background: rgba(15, 23, 42, 0.8);
+            display: flex;
+            gap: 15px;
+        }
+
+        .message-input {
+            flex-grow: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 20px;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        .message-input:focus { border-color: var(--accent); background: rgba(255, 255, 255, 0.1); }
+
+        .send-btn {
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 0 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .send-btn:hover { transform: scale(1.05); }
+
+        @media (max-width: 800px) {
+            .side-panel { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="side-panel">
+        <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">The Era Bridge</h3>
+        <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1rem;">Use these shared interests to break the ice with your match.</p>
+
+        <div class="icebreaker-card" onclick="copyToInput('I saw we both love the Coffee Culture hub! Have you tried the new brew at the library?')">
+            <b>Shared Vibe: Coffee ☕</b>
+            <p>"I saw we both love the Coffee Culture hub! Have you tried the new brew?"</p>
+        </div>
+
+        <div class="icebreaker-card" onclick="copyToInput('Hey! Since we both study the same major, are you finding the latest project difficult too?')">
+            <b>Shared Major: Academic 📚</b>
+            <p>"Hey! Since we study the same major, are you finding the project hard?"</p>
+        </div>
+
+        <div class="icebreaker-card" onclick="copyToInput('That 94% match score is pretty high! What are the odds?')">
+            <b>The Algorithm 📡</b>
+            <p>"That 94% match score is pretty high! What are the odds?"</p>
+        </div>
+    </aside>
+
+    <main class="chat-main">
+        <div class="chat-header">
+            <div class="user-profile">
+                <div class="avatar"></div>
+                <div>
+                    <h4 id="partnerName">Alex Rivera</h4>
+                    <p style="font-size: 0.7rem; color: #22c55e;">Online <span class="typing" id="typingIndicator">...is typing</span></p>
+                </div>
+            </div>
+            <div style="font-size: 1.2rem; cursor: pointer;">⋮</div>
+        </div>
+
+        <div class="messages-viewport" id="chatBox">
+            <div class="bubble received">
+                Hi! I noticed our compatibility radar was off the charts. Great to meet you!
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" class="message-input" id="msgInput" placeholder="Write a message..." onkeypress="handleKey(event)">
+            <button class="send-btn" onclick="sendMsg()">Send</button>
+        </div>
+    </main>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const msgInput = document.getElementById('msgInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // 1. Send Message Logic
+        function sendMsg() {
+            const text = msgInput.value.trim();
+            if (text === "") return;
+
+            // Add sent bubble
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble sent';
+            bubble.innerText = text;
+            chatBox.appendChild(bubble);
+
+            // Clear input and scroll
+            msgInput.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Fake an AI reply after 1.5 seconds
+            simulateReply();
+        }
+
+        // 2. Handle Enter Key
+        function handleKey(e) {
+            if (e.key === 'Enter') sendMsg();
+        }
+
+        // 3. Icebreaker Helper
+        function copyToInput(text) {
+            msgInput.value = text;
+            msgInput.focus();
+        }
+
+        // 4. Simulate EraConnect Experience (AI Response)
+        function simulateReply() {
+            typingIndicator.style.display = 'inline';
+            
+            setTimeout(() => {
+                typingIndicator.style.display = 'none';
+                const reply = document.createElement('div');
+                reply.className = 'bubble received';
+                reply.innerText = "That sounds interesting! We should definitely check it out sometime this week.";
+                chatBox.appendChild(reply);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 2000);
+        }
+
+        // Load name from LocalStorage (if available)
+        window.onload = () => {
+            const savedData = localStorage.getItem('currentUser');
+            // This chat is hardcoded for Alex Rivera, 
+            // but in a real app, you'd pull the match's name here.
+        };
+    </script>
+</body>
+</html>
