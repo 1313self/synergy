@@ -269,12 +269,13 @@
 
 <script>
 // --- AUTH PROTECTION ---
-const userEmail = localStorage.getItem("userEmail");
-const userName = localStorage.getItem("userName");
+// --- AUTH PROTECTION ---
+const userEmail = localStorage.getItem("user_email");   // ← lowercase _email
+const userName = localStorage.getItem("user_name");     // ← lowercase _name
 
 if (!userEmail) {
     alert("Please log in to use Synergy!");
-    window.location.href = "login.html"; 
+    window.location.href = "index.html";  // ← send back to login page
 } else {
     document.getElementById('userBadge').innerText = `Logged in as: ${userEmail}`;
     if (userName) document.getElementById('sName').value = userName;
@@ -426,3 +427,4 @@ function showResults(text) {
 </script>
 </body>
 </html>
+
