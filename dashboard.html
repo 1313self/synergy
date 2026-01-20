@@ -45,16 +45,27 @@
     }
 
     .sidebar {
-      background: rgba(15, 23, 42, 0.5);
+      background: rgba(15, 23, 42, 0.8);
       border-right: 1px solid rgba(255,255,255,0.05);
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
       height: 100vh;
-      position: sticky; /* Keeps it visible while scrolling main content */
+      position: sticky;
       top: 0;
       z-index: 1000;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Overlay for Mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1500;
     }
 
     .hamburger {
@@ -65,10 +76,11 @@
       position: fixed;
       top: 1rem;
       left: 1rem;
-      z-index: 1100;
+      z-index: 2100; /* Higher than sidebar and overlay */
       background: var(--bg);
-      padding: 5px 10px;
+      padding: 5px 12px;
       border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .brand {
@@ -213,7 +225,7 @@
       font-weight: 600;
       transform: translateY(-100px);
       transition: 0.4s;
-      z-index: 2000;
+      z-index: 3000;
     }
     #notification.show { transform: translateY(0); }
 
@@ -228,11 +240,17 @@
         left: 0;
         transform: translateX(-100%);
         width: 280px;
+        background: var(--bg); /* Solid background on mobile */
+        z-index: 2000;
       }
 
       .sidebar.active {
         transform: translateX(0);
         box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+      }
+
+      .sidebar-overlay.active {
+        display: block;
       }
 
       .hamburger {
@@ -254,13 +272,15 @@
   <div class="stars-bg"></div>
   <div id="notification">Joined Room! ✨</div>
 
-  <div class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('active')">☰</div>
+  <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <div class="hamburger" onclick="toggleMenu()">☰</div>
 
   <div class="app-container">
     <aside class="sidebar" id="sidebar">
       <a href="#" class="brand">E<span>C</span></a>
       <nav class="nav-list">
-        <a href="dashboard.html" class="nav-link active"><span>🏠</span> Explore Hubs</a>
+        <a href="dashboard.html" class="nav-link active" onclick="if(window.innerWidth <= 1024) toggleMenu()"><span>🏠</span> Explore Hubs</a>
         <a href="a1.html" class="nav-link"><span>🔮</span> Deep Match</a>
         <a href="chat.html" class="nav-link"><span>💬</span> Messages</a>
         <a href="profile.html" class="nav-link"><span>👤</span> Profile</a>
@@ -325,6 +345,12 @@
   </div>
 
   <script>
+    // New function to handle both sidebar and overlay
+    function toggleMenu() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('overlay').classList.toggle('active');
+    }
+
     function joinRoom(btn, roomName) {
       const originalText = btn.innerText;
       btn.innerText = "Connecting...";
@@ -344,12 +370,6 @@
     window.onload = function() {
       const userEmail = localStorage.getItem('user_email');
       const userName = localStorage.getItem('user_name');
-
-      // Note: During testing you might want to comment the redirect out if you haven't set up the login page yet
-      if (!userEmail && window.location.hostname !== "127.0.0.1") {
-        // alert("Unauthorized access. Please login first.");
-        // window.location.href = "index.html";
-      }
 
       if (userName) {
         const firstName = userName.split(' ')[0];
