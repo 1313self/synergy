@@ -257,6 +257,7 @@
             if(data.status === "success") {
                 localStorage.setItem('user_email', data.user_email);
                 localStorage.setItem('user_name', data.user_name);
+                localStorage.setItem('access_token', data.access_token);
                 window.location.href = "dashboard.html";
             } else { alert(data.message); }
         } catch(e) { alert("Backend Offline!"); }
@@ -289,4 +290,5 @@
 </script>
 
 </body>
+
 </html>
