@@ -324,7 +324,7 @@ function createHearts(x, y) {
 }
 
 async function handleAnalyze(e) {
-    e.preventDefault();  // Stops any default GET submit
+    e.preventDefault();
 
     const name = document.getElementById('sName').value.trim();
     const desc = document.getElementById('sDesc').value.trim();
@@ -337,8 +337,11 @@ async function handleAnalyze(e) {
         return;
     }
 
-    // Get token from localStorage (saved after login)
+    // Get token (this is the fix!)
     const token = localStorage.getItem('access_token');
+
+    // Debug: show if token exists
+    console.log("Token being sent:", token ? token.substring(0, 20) + "..." : "NO TOKEN!");
 
     if (!token) {
         alert("Session expired or not logged in. Please login again.");
@@ -357,12 +360,12 @@ async function handleAnalyze(e) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`  // ← THIS LINE WAS MISSING OR EMPTY
+                'Authorization': `Bearer ${token}`  // ← THIS MUST BE PRESENT
             },
             body: JSON.stringify({
                 seekerName: name,
                 seekerDesc: desc,
-                email: localStorage.getItem('user_email')  // for quota
+                email: localStorage.getItem('user_email')
             })
         });
 
@@ -441,6 +444,7 @@ function showResults(text) {
 </script>
 </body>
 </html>
+
 
 
 
