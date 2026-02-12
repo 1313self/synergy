@@ -180,7 +180,7 @@
 </div>
 
 <script>
-    const API = "https://eraconnect.onrender.com";
+    const API = "https://eraconnect-1.onrender.com";
     let selectedHobbies = new Set();
     let userRhythm = "";
     let userHours = "";
@@ -297,7 +297,7 @@
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(signupData)
-            });
+            })
             const data = await res.json();
             
             if(res.ok) {
